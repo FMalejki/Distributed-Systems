@@ -1,0 +1,6 @@
+__pycache__/* 
+oswiadczenie.txt
+*.zip
+Malejki_*
+venv/*
+.DS_Store
