@@ -166,5 +166,3 @@ if __name__ == "__main__":
     print("Make sure server.py is running on port 12345\n")
     time.sleep(2)
     run_tests()
-
-# Made with Bob
