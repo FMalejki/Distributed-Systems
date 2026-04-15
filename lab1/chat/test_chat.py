@@ -45,17 +45,20 @@ def test_udp_client(nickname, message, delay=2):
     try:
         time.sleep(delay)
         
-        udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-        udp_sock.bind(('', 12345))
+        recv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        recv_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        recv_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+        recv_sock.bind(('', 12345))
+        
+        send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
         def receive_udp():
             while True:
                 try:
-                    data, addr = udp_sock.recvfrom(4096)
+                    data, addr = recv_sock.recvfrom(4096)
                     msg = data.decode('utf-8')
-                    print(f"[{nickname}] UDP Received: {msg}")
+                    if not msg.startswith(f"{nickname}:"):
+                        print(f"[{nickname}] UDP Received: {msg}")
                 except:
                     break
         
@@ -65,10 +68,11 @@ def test_udp_client(nickname, message, delay=2):
         time.sleep(1)
         full_msg = f"{nickname}: {message}"
         print(f"[{nickname}] Sending UDP: {message}")
-        udp_sock.sendto(full_msg.encode('utf-8'), ('127.0.0.1', 12345))
+
+        send_sock.sendto(full_msg.encode('utf-8'), ('127.0.0.1', 12345))
         
-        time.sleep(2)
-        udp_sock.close()
+        recv_sock.close()
+        send_sock.close()
         
     except Exception as e:
         print(f"[{nickname}] UDP Error: {e}")
@@ -122,8 +126,8 @@ def run_tests():
     print("Test 1: TCP Communication (2 clients)")
     print("-" * 50)
     
-    client1 = threading.Thread(target=test_tcp_client, args=("Alice", ["Hello from Alice", "How are you?"], 1))
-    client2 = threading.Thread(target=test_tcp_client, args=("Bob", ["Hi Alice!", "I'm good, thanks!"], 2))
+    client1 = threading.Thread(target=test_tcp_client, args=("A1", ["Hello", "How are you?"], 1))
+    client2 = threading.Thread(target=test_tcp_client, args=("B1", ["Hi!", "good!"], 2))
     
     client1.start()
     client2.start()
@@ -136,8 +140,8 @@ def run_tests():
     print("Test 2: UDP Communication")
     print("-" * 50)
     
-    udp1 = threading.Thread(target=test_udp_client, args=("Charlie", "UDP ASCII Art: ¯\\_(ツ)_/¯", 1))
-    udp2 = threading.Thread(target=test_udp_client, args=("Dave", "UDP Message from Dave", 2))
+    udp1 = threading.Thread(target=test_udp_client, args=("C1", "UDP ASCII Art: ¯\\_(ツ)_/¯", 1))
+    udp2 = threading.Thread(target=test_udp_client, args=("D1", "UDP Message from Dave", 2))
     
     udp1.start()
     udp2.start()
