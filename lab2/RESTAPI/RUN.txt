@@ -1,0 +1,23 @@
+PACZKI:
+pip install -r requirements.txt
+
+URUCHOMIENIE:
+uvicorn main:app --reload
+
+DOSTEP:
+- Interfejs HTML: http://localhost:8000
+- Swagger UI: http://localhost:8000/docs
+- API: http://localhost:8000/api/*
+
+ALPHA VANTAGE API:
+- https://www.alphavantage.co/support/#api-key
+- .env: ALPHA_VANTAGE_KEY=apikey
+
+ENDPOINTY:
+GET  /health
+GET  /api/commodity/{oil|gas}
+GET  /api/stock/{LMT|BA|RTX|NOC|GD}
+POST /api/analyze
+
+WAZNE:
+- w zaleznosci od uzywanej wersji pythona, pydantic moze miec problemy
